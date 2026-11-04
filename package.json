@@ -18,6 +18,10 @@
     "./astronomy/hips": {
       "types": "./lib-esm/astronomy/hips/index.d.ts",
       "import": "./lib-esm/astronomy/hips/index.js"
+    },
+    "./astronomy/tap": {
+      "types": "./lib-esm/astronomy/tap/index.d.ts",
+      "import": "./lib-esm/astronomy/tap/index.js"
     }
   },
   "files": [
