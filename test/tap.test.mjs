@@ -100,3 +100,45 @@ test('metadata CSV parser handles quoting and rejects malformed data', async () 
   await assert.rejects(tap.listSchemas(), error => error.code === 'INVALID_RESPONSE');
   await assert.rejects(tap.listColumns(' '), TypeError);
 });
+
+test('TAP CSV table preserves headers and row values', async () => {
+  const { parseTapCsvTable } =
+    await import('../lib-esm/astronomy/tap/index.js');
+
+  const table = parseTapCsvTable(
+    'ra,dec,name\n12.5,-3.2,"M51, Whirlpool"\n',
+  );
+
+  assert.deepEqual(table.columns, ['ra', 'dec', 'name']);
+  assert.deepEqual(table.rows, [
+    { ra: '12.5', dec: '-3.2', name: 'M51, Whirlpool' },
+  ]);
+});
+
+test('TAP CSV table preserves headers when no rows are returned', async () => {
+  const { parseTapCsvTable, parseTapCsv } =
+    await import('../lib-esm/astronomy/tap/index.js');
+
+  const csv = 'ra,dec,source_id\n';
+
+  assert.deepEqual(parseTapCsvTable(csv), {
+    columns: ['ra', 'dec', 'source_id'],
+    rows: [],
+  });
+
+  assert.deepEqual(parseTapCsv(csv), []);
+});
+
+test('TAP CSV table handles BOM and quoted headers', async () => {
+  const { parseTapCsvTable } =
+    await import('../lib-esm/astronomy/tap/index.js');
+
+  const table = parseTapCsvTable(
+    '\uFEFF"right ascension",dec\r\n12.5,-3.2\r\n',
+  );
+
+  assert.deepEqual(table.columns, ['right ascension', 'dec']);
+  assert.deepEqual(table.rows, [
+    { 'right ascension': '12.5', dec: '-3.2' },
+  ]);
+});
