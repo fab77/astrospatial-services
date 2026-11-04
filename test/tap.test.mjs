@@ -60,3 +60,43 @@ test('propagates transport errors without converting them', async () => {
   } });
   await assert.rejects(tap.querySync({ adql: 'SELECT 1' }), error => error === failure);
 });
+
+test('metadata API reads capabilities and queries TAP_SCHEMA via POST', async () => {
+  const calls = [];
+  const transport = {
+    getText: async (url, opts) => { calls.push({url, opts}); return '<capabilities />'; },
+    request: async (url, opts) => {
+      const adql = new URLSearchParams(opts.body).get('QUERY');
+      calls.push({url, opts, adql});
+      const body = adql.includes('TAP_SCHEMA.schemas') ? 'schema_name,description,utype\nobservations,"A, B",\n' :
+        adql.includes('TAP_SCHEMA.tables') ? 'schema_name,table_name,table_type,description,utype\nobservations,observations.test,table,"two\nlines",\n' :
+        'table_name,column_name,description,unit,ucd,utype,datatype,arraysize,xtype,principal,indexed,std\nobservations.test,ra,Right ascension,deg,pos.eq.ra,,DOUBLE,,,,1,1\n';
+      return {status:200, headers:new Headers({'content-type':'text/csv'}), body};
+    },
+  };
+  const tap = new TapService({endpoint:'https://example.org/tap/sync',transport,timeoutMs:4000});
+  assert.equal(await tap.getCapabilities(), '<capabilities />');
+  assert.equal(calls[0].url, 'https://example.org/tap/capabilities');
+  assert.equal(calls[0].opts.timeoutMs, 4000);
+  assert.deepEqual(await tap.listSchemas(), [{schema_name:'observations',description:'A, B',utype:''}]);
+  const tables = await tap.listTables({schemaName:"obser'vations"});
+  assert.equal(tables[0].description, 'two\nlines');
+  assert.match(calls[2].adql, /WHERE schema_name = 'obser''vations'/);
+  const columns = await tap.listColumns('observations.test');
+  assert.equal(columns[0].column_name, 'ra');
+  assert.equal(columns[0].datatype, 'DOUBLE');
+  assert.match(calls[3].adql, /WHERE table_name = 'observations.test'/);
+});
+
+test('metadata CSV parser handles quoting and rejects malformed data', async () => {
+  const {parseTapCsv} = await import('../lib-esm/astronomy/tap/index.js');
+  assert.deepEqual(parseTapCsv('name,description\r\nx,"a ""quote"", here"\r\n'),
+    [{name:'x',description:'a "quote", here'}]);
+  assert.throws(() => parseTapCsv('name,description\nx,"unterminated'), error => error.code === 'INVALID_RESPONSE');
+  assert.throws(() => parseTapCsv('name,description\nx\n'), error => error.code === 'INVALID_RESPONSE');
+  const tap = new TapService({endpoint:'https://example.org/tap',transport:{
+    getText:async()=>'', request:async()=>({status:200,headers:new Headers({'content-type':'application/xml'}),body:'<VOTABLE />'})
+  }});
+  await assert.rejects(tap.listSchemas(), error => error.code === 'INVALID_RESPONSE');
+  await assert.rejects(tap.listColumns(' '), TypeError);
+});
