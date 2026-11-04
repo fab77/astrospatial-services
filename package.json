@@ -55,5 +55,8 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "astrospatial-core": "0.4.2"
   }
 }
