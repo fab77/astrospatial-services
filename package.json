@@ -1,6 +1,6 @@
 {
   "name": "astrospatial-services",
-  "version": "0.1.0-snapshot",
+  "version": "0.1.0",
   "description": "Render-independent scientific service clients for astronomy, Earth observation and planetary data.",
   "type": "module",
   "main": "./lib-esm/index.js",
@@ -14,7 +14,15 @@
       "types": "./lib-esm/astronomy/name-resolver/index.d.ts",
       "import": "./lib-esm/astronomy/name-resolver/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./astronomy/hips": {
+      "types": "./lib-esm/astronomy/hips/index.d.ts",
+      "import": "./lib-esm/astronomy/hips/index.js"
+    },
+    "./astronomy/tap": {
+      "types": "./lib-esm/astronomy/tap/index.d.ts",
+      "import": "./lib-esm/astronomy/tap/index.js"
+    }
   },
   "files": [
     "lib-esm/",
@@ -47,5 +55,9 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "astrospatial-core": "0.4.2",
+    "@xmldom/xmldom": "^0.9.8"
   }
 }

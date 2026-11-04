@@ -1,4 +1,4 @@
-export type ServiceErrorCode = 'NETWORK' | 'HTTP' | 'TIMEOUT' | 'ABORTED' | 'INVALID_RESPONSE' | 'NOT_FOUND';
+export type ServiceErrorCode = 'NETWORK' | 'HTTP' | 'TIMEOUT' | 'ABORTED' | 'INVALID_RESPONSE' | 'NOT_FOUND' | 'NOT_IMPLEMENTED';
 
 export class ServiceError extends Error {
   constructor(
