@@ -1,0 +1,51 @@
+{
+  "name": "astrospatial-services",
+  "version": "0.1.0-snapshot",
+  "description": "Render-independent scientific service clients for astronomy, Earth observation and planetary data.",
+  "type": "module",
+  "main": "./lib-esm/index.js",
+  "types": "./lib-esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib-esm/index.d.ts",
+      "import": "./lib-esm/index.js"
+    },
+    "./astronomy/name-resolver": {
+      "types": "./lib-esm/astronomy/name-resolver/index.d.ts",
+      "import": "./lib-esm/astronomy/name-resolver/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib-esm/",
+    "README.md",
+    "LICENSE.md",
+    "LICENSE-COMMERCIAL.md",
+    "LICENSE-AGPL.md",
+    "DEPENDENCY-LICENSING.md",
+    "package.json"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "clean": "rm -rf lib-esm",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "test:live": "npm run build && node --test test/*.live.test.mjs"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "author": "Fabrizio Giordano (fab77)",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fab77/astrospatial-services.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
