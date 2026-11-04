@@ -14,7 +14,11 @@
       "types": "./lib-esm/astronomy/name-resolver/index.d.ts",
       "import": "./lib-esm/astronomy/name-resolver/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./astronomy/hips": {
+      "types": "./lib-esm/astronomy/hips/index.d.ts",
+      "import": "./lib-esm/astronomy/hips/index.js"
+    }
   },
   "files": [
     "lib-esm/",
