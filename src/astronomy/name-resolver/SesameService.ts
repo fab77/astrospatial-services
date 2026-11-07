@@ -15,28 +15,45 @@ export interface NameResolver {
 export interface SesameServiceOptions {
   endpoint?: string;
   timeoutMs?: number;
+  fallbackEndpoints?: string[];
   transport?: HttpTransport;
 }
 
 /** CDS Sesame XML resolver; coordinates are decimal degrees (ICRS/J2000 as supplied by CDS). */
 export class SesameService implements NameResolver {
   private readonly endpoint: string;
+  private readonly fallbackEndpoints: string[];
   private readonly timeoutMs: number;
   private readonly transport: HttpTransport;
 
   constructor(options: SesameServiceOptions = {}) {
     this.endpoint = options.endpoint ?? 'https://cdsweb.u-strasbg.fr/cgi-bin/nph-sesame/-ox?';
+    this.fallbackEndpoints = options.fallbackEndpoints ?? ['https://vizier.cfa.harvard.edu/viz-bin/nph-sesame/-ox/S?'];
     this.timeoutMs = options.timeoutMs ?? 10000;
     this.transport = options.transport ?? new FetchHttpTransport();
   }
 
   async resolve(name: string, options: { signal?: AbortSignal } = {}): Promise<ResolvedTarget | null> {
     if (!name.trim()) throw new TypeError('Target name must not be empty');
-    const raw = await this.transport.getText(this.endpoint + encodeURIComponent(name.trim()), {
-      signal: options.signal,
-      timeoutMs: this.timeoutMs,
-    });
-    return parseSesameXml(raw, name.trim());
+    const targetName = name.trim();
+    const endpoints = [...new Set([this.endpoint, ...this.fallbackEndpoints])];
+    let lastError: unknown;
+    for (const endpoint of endpoints) {
+      if (options.signal?.aborted) throw new ServiceError('ABORTED', 'Request aborted');
+      try {
+        const raw = await this.transport.getText(endpoint + encodeURIComponent(targetName), {
+          signal: options.signal,
+          timeoutMs: this.timeoutMs,
+        });
+        return parseSesameXml(raw, targetName);
+      } catch (error) {
+        if (options.signal?.aborted || (error instanceof ServiceError && error.code === 'ABORTED')) throw error;
+        if (error instanceof ServiceError && error.code === 'HTTP' && error.status !== undefined && error.status < 500 && error.status !== 429) throw error;
+        lastError = error;
+      }
+    }
+    throw lastError;
+
   }
 }
 
