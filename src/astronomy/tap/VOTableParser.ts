@@ -1,13 +1,10 @@
 import { DOMParser, type Element as XmlElement } from "@xmldom/xmldom";
-import type { MetadataColumn } from "astrospatial-core/metadata";
+import type { AstroTable } from "astrospatial-core/metadata";
 import { ServiceError } from "../../core/ServiceError.js";
 import type { TapColumn } from "./TapService.js";
 import { tapColumnsToMetadata } from "./TapMetadataAdapter.js";
 
-export interface VOTableResult {
-  columns: MetadataColumn[];
-  rows: string[][];
-}
+export interface VOTableResult extends AstroTable {}
 
 export interface VOTableOptions {
   /** Output column name -> original TAP_SCHEMA column name. */

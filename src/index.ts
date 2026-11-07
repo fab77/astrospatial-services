@@ -5,3 +5,5 @@ export type { ServiceErrorCode } from './core/ServiceError.js';
 export * from './astronomy/name-resolver/index.js';
 export * from './astronomy/hips/index.js';
 export * from './astronomy/tap/index.js';
+
+export * from "./astronomy/table/index.js";

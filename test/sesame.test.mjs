@@ -35,3 +35,33 @@ test('propagates caller cancellation', async () => {
 test('rejects blank target', async () => {
   await assert.rejects(new SesameService().resolve(' '), TypeError);
 });
+
+test('falls back to Harvard when primary transport fails', async () => {
+  const urls = [];
+  const service = new SesameService({ transport: { async getText(url) {
+    urls.push(url);
+    if (urls.length === 1) throw new ServiceError('TIMEOUT', 'timeout');
+    return xml;
+  } } });
+  assert.equal((await service.resolve('M51')).raDeg, 202.469575);
+  assert.match(urls[0], /cdsweb\.u-strasbg\.fr/);
+  assert.match(urls[1], /vizier\.cfa\.harvard\.edu\/viz-bin\/nph-sesame\/-ox\/S\?M51$/);
+});
+test('does not fall back on unresolved name', async () => {
+  let calls = 0;
+  const service = new SesameService({ transport: { async getText() { calls++; return '<Sesame><Target/></Sesame>'; } } });
+  assert.equal(await service.resolve('unknown'), null);
+  assert.equal(calls, 1);
+});
+test('falls back after invalid XML and deduplicates endpoints', async () => {
+  let calls = 0;
+  const service = new SesameService({ endpoint: 'https://one/?', fallbackEndpoints: ['https://one/?', 'https://two/?'], transport: { async getText() { return ++calls === 1 ? '<html/>' : xml; } } });
+  assert.equal((await service.resolve('M51')).decDeg, 47.195258);
+  assert.equal(calls, 2);
+});
+test('does not fall back after cancellation', async () => {
+  let calls = 0;
+  const service = new SesameService({ transport: { async getText() { calls++; throw new ServiceError('ABORTED', 'cancelled'); } } });
+  await assert.rejects(service.resolve('M51'), { code: 'ABORTED' });
+  assert.equal(calls, 1);
+});
