@@ -57,7 +57,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "astrospatial-core": "0.4.2",
+    "astrospatial-core": "^0.4.3",
     "@xmldom/xmldom": "^0.9.8"
   }
 }
