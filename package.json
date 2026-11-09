@@ -22,6 +22,10 @@
     "./astronomy/tap": {
       "types": "./lib-esm/astronomy/tap/index.d.ts",
       "import": "./lib-esm/astronomy/tap/index.js"
+    },
+    "./earth/name-resolver": {
+      "types": "./lib-esm/earth/name-resolver/index.d.ts",
+      "import": "./lib-esm/earth/name-resolver/index.js"
     }
   },
   "files": [
