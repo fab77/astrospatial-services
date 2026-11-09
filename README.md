@@ -2,7 +2,8 @@
 
 Render-independent TypeScript services for scientific data access across astronomy, Earth observation and planetary applications.
 
-**Status:** 0.1.0-snapshot; foundation and CDS Sesame name resolution only. TAP and HiPS discovery are planned, **not implemented**.
+**Status:** active development. Includes CDS Sesame name resolution, Nominatim
+Earth place resolution, HiPS discovery and TAP clients.
 
 ## Requirements
 
@@ -28,6 +29,27 @@ const target = await resolver.resolve('M51'); // { name, raDeg, decDeg, resolver
 
 The XML parser is a small, deliberately limited parser for Sesame's `Target/Resolver/jradeg/jdedeg` response. It is not a general-purpose XML parser; richer Sesame responses or VOTable will require a dedicated parser and fixtures.
 
+## Earth place resolution
+
+```ts
+import { NominatimService } from 'astrospatial-services/earth/name-resolver';
+
+const resolver = new NominatimService({
+  userAgent: 'My application (contact@example.org)',
+});
+const places = await resolver.search('Gran Vía, Madrid', { limit: 5 });
+```
+
+Results retain geographic coordinates, display label, feature category and
+type, importance, bounding box and structured address fields. Blank or short
+queries and invalid limits are rejected before making a request. Transport,
+endpoint, timeout and caller cancellation are configurable.
+
+Public Nominatim instances require an identifiable application and enforce a
+usage policy. Production browser applications should call a compliant
+server-side proxy with caching and rate limiting; AstroBrowser's Earth backend
+is one such integration point.
+
 ### Live integration
 
 ```sh
@@ -38,9 +60,9 @@ Live tests require external CDS availability and are excluded from ordinary CI.
 
 ## Roadmap
 
-- HiPS node discovery and `hipslist`/`properties` parsing, independent of AstroViewer's `HiPSDescriptor`.
-- TAP Sync/ADQL with typed tabular results, then TAP Async and VOTable metadata.
-- Later: STAC/OGC Earth observation and planetary/PDS discovery.
+- Nominatim reverse geocoding and proxy-client integration.
+- TAP Async and richer VOTable metadata.
+- STAC/OGC Earth observation and planetary/PDS discovery.
 
 ## Licensing
 
