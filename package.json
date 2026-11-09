@@ -1,6 +1,6 @@
 {
   "name": "astrospatial-services",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Render-independent scientific service clients for astronomy, Earth observation and planetary data.",
   "type": "module",
   "main": "./lib-esm/index.js",
@@ -22,6 +22,10 @@
     "./astronomy/tap": {
       "types": "./lib-esm/astronomy/tap/index.d.ts",
       "import": "./lib-esm/astronomy/tap/index.js"
+    },
+    "./earth/name-resolver": {
+      "types": "./lib-esm/earth/name-resolver/index.d.ts",
+      "import": "./lib-esm/earth/name-resolver/index.js"
     }
   },
   "files": [
