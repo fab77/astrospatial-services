@@ -1,6 +1,6 @@
 {
   "name": "astrospatial-services",
-  "version": "0.2.1-snapshot",
+  "version": "0.3.0",
   "description": "Render-independent scientific service clients for astronomy, Earth observation and planetary data.",
   "type": "module",
   "main": "./lib-esm/index.js",
