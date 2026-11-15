@@ -27,6 +27,14 @@
       "types": "./lib-esm/earth/name-resolver/index.d.ts",
       "import": "./lib-esm/earth/name-resolver/index.js"
     },
+    "./earth/openstreetmap": {
+      "types": "./lib-esm/earth/openstreetmap/index.d.ts",
+      "import": "./lib-esm/earth/openstreetmap/index.js"
+    },
+    "./earth/emergency": {
+      "types": "./lib-esm/earth/emergency/index.d.ts",
+      "import": "./lib-esm/earth/emergency/index.js"
+    },
     "./earth/wildfire": {
       "types": "./lib-esm/earth/wildfire/index.d.ts",
       "import": "./lib-esm/earth/wildfire/index.js"

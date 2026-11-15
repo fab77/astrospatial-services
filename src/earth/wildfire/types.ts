@@ -55,3 +55,36 @@ export interface FirmsAreaResult {
   startDate?: string;
   provider: 'NASA FIRMS';
 }
+
+export type BurnedAreaGeometry =
+  | { type: 'Polygon'; coordinates: number[][][] }
+  | { type: 'MultiPolygon'; coordinates: number[][][][] };
+
+export interface BurnedAreaPerimeter {
+  id: string;
+  fireId: string;
+  initialAt: string;
+  finalAt: string;
+  areaHa: number;
+  geometry: BurnedAreaGeometry;
+  product: 'MODIS & VIIRS NRT';
+  provider: 'Copernicus GWIS';
+}
+
+export interface GwisBurnedAreaQuery {
+  area: GeographicBoundingBox;
+  startDate: string;
+  endDate: string;
+  minAreaHa?: number;
+  signal?: AbortSignal;
+}
+
+export interface GwisBurnedAreaResult {
+  perimeters: BurnedAreaPerimeter[];
+  area: GeographicBoundingBox;
+  startDate: string;
+  endDate: string;
+  minAreaHa?: number;
+  product: 'MODIS & VIIRS NRT';
+  provider: 'Copernicus GWIS';
+}
