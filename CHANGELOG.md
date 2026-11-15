@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.0 — 2026-11-15
+
+- Add Copernicus GWIS burnt-area perimeter queries with spatial, temporal and
+  minimum-area filtering.
+- Add Copernicus EMS Rapid Mapping activation and flood-layer discovery.
+- Add bounded OpenStreetMap Overpass infrastructure queries with normalised
+  Earth feature metadata.
+- Export the new `earth/emergency` and `earth/openstreetmap` entry points and
+  extend the `earth/wildfire` API.
+- Document the Earth-observation service architecture, browser relay pattern
+  and reproducible snapshot workflow.
+- Add offline unit coverage for GWIS, CEMS Rapid Mapping and Overpass services.
+
 ## 0.1.0-snapshot
 
 - Initial TypeScript ESM package foundation.
