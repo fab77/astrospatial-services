@@ -26,6 +26,10 @@
     "./earth/name-resolver": {
       "types": "./lib-esm/earth/name-resolver/index.d.ts",
       "import": "./lib-esm/earth/name-resolver/index.js"
+    },
+    "./earth/wildfire": {
+      "types": "./lib-esm/earth/wildfire/index.d.ts",
+      "import": "./lib-esm/earth/wildfire/index.js"
     }
   },
   "files": [

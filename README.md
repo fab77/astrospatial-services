@@ -50,6 +50,34 @@ usage policy. Production browser applications should call a compliant
 server-side proxy with caching and rate limiting; AstroBrowser's Earth backend
 is one such integration point.
 
+## Earth wildfire detections
+
+```ts
+import { FirmsService } from 'astrospatial-services/earth/wildfire';
+
+const firms = new FirmsService({
+  authentication: { kind: 'map-key', mapKey: process.env.FIRMS_MAP_KEY! },
+});
+const result = await firms.queryArea({
+  source: 'VIIRS_NOAA21_NRT',
+  area: { west: -18, south: -35, east: 52, north: 38 },
+  dayRange: 5,
+  startDate: '2026-08-25',
+});
+```
+
+`FirmsService` calls the official NASA FIRMS area API and normalises its CSV
+records into render-independent fire detections. Coordinates, acquisition time,
+satellite, instrument, confidence, brightness, FRP, scan/track dimensions and
+day/night metadata are retained when supplied by the selected product.
+
+FIRMS requires a free MAP_KEY. Server-side applications can use `map-key`
+authentication directly. Browser applications should use `relay`
+authentication with a custom endpoint that injects the key server-side; the key
+must not be included in browser code. The client deliberately does not infer
+fire incidents, severity, active/extinguished state or burnt-area perimeters
+from thermal detections.
+
 ### Live integration
 
 ```sh
@@ -61,6 +89,7 @@ Live tests require external CDS availability and are excluded from ordinary CI.
 ## Roadmap
 
 - Nominatim reverse geocoding and proxy-client integration.
+- FIRMS data-availability checks and burnt-area provider integration.
 - TAP Async and richer VOTable metadata.
 - STAC/OGC Earth observation and planetary/PDS discovery.
 
