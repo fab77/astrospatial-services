@@ -1,6 +1,6 @@
 {
   "name": "astrospatial-services",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Render-independent scientific service clients for astronomy, Earth observation and planetary data.",
   "type": "module",
   "main": "./lib-esm/index.js",
@@ -26,6 +26,18 @@
     "./earth/name-resolver": {
       "types": "./lib-esm/earth/name-resolver/index.d.ts",
       "import": "./lib-esm/earth/name-resolver/index.js"
+    },
+    "./earth/openstreetmap": {
+      "types": "./lib-esm/earth/openstreetmap/index.d.ts",
+      "import": "./lib-esm/earth/openstreetmap/index.js"
+    },
+    "./earth/emergency": {
+      "types": "./lib-esm/earth/emergency/index.d.ts",
+      "import": "./lib-esm/earth/emergency/index.js"
+    },
+    "./earth/wildfire": {
+      "types": "./lib-esm/earth/wildfire/index.d.ts",
+      "import": "./lib-esm/earth/wildfire/index.js"
     }
   },
   "files": [
