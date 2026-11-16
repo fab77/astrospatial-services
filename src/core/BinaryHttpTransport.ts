@@ -9,7 +9,7 @@ export interface BinaryRequestOptions {
 export interface BinaryHttpResponse {
   status: number;
   headers: Headers;
-  body: ArrayBuffer;
+  body: ArrayBuffer | ArrayBufferView;
 }
 
 export interface BinaryHttpTransport {

@@ -83,6 +83,27 @@ always verifies the final byte length before decoding. Applications handling
 large products can inject their own binary transport backed by a cache or
 offline asset store.
 
+### Node filesystem cache
+
+```ts
+import { PlanetaryElevationService } from 'astrospatial-services/planetary/elevation';
+import { CachedBinaryHttpTransport } from 'astrospatial-services/planetary/node';
+
+const elevations = new PlanetaryElevationService({
+  binaryTransport: new CachedBinaryHttpTransport({
+    cacheDir: '/absolute/path/to/planetary-cache',
+  }),
+});
+
+const result = await elevations.load('moon-lro-lola-ldem-64');
+```
+
+The Node-only transport names cached assets by a SHA-256 hash of their source
+URL, validates catalogued byte length before reuse, removes stale partial files,
+deduplicates concurrent requests in one process and publishes completed files
+through an atomic rename. It is intentionally exported from `planetary/node`
+rather than the browser-compatible package root.
+
 ## Requirements
 
 Node.js >=22, npm, TypeScript 5.x. ESM package; browser-compatible APIs (`fetch`, `AbortSignal`) with no dependency on AstroViewer.

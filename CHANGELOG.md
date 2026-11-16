@@ -7,6 +7,7 @@
 - Add an initial curated record for the official LRO LOLA global product.
 - Add detached PDS3 label parsing and zero-copy LOLA LDEM decoding.
 - Add cancellable binary acquisition and catalog-driven elevation loading.
+- Add a Node-only atomic filesystem cache for large planetary products.
 
 ## 0.4.0 — 2026-11-15
 

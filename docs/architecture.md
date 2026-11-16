@@ -25,6 +25,8 @@ adapters are responsible for converting source coordinates, units and vertical
 datums into the canonical elevation-field contract; mesh generation remains a
 consumer concern. Large-product caching and filesystem persistence are also
 consumer concerns and can be implemented through an injected binary transport.
+The optional `src/planetary/node` entry point provides an atomic filesystem
+cache and is never exported from the browser-compatible package root.
 
 Provider clients preserve source measurements and provenance. Application-level
 classification such as severity, fire-event clustering, active/extinguished
