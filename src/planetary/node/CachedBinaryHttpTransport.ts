@@ -46,7 +46,7 @@ export class CachedBinaryHttpTransport implements BinaryHttpTransport {
     url: string,
     options: BinaryRequestOptions = {},
   ): Promise<BinaryHttpResponse> {
-    const key = `${url}\n${options.expectedByteLength ?? ''}`;
+    const key = `${url}\n${options.expectedByteLength ?? ''}\n${options.expectedSha256 ?? ''}`;
     const existing = this.pending.get(key);
     if (existing) return existing;
     const request = this.loadOrDownload(url, options).finally(() => this.pending.delete(key));
@@ -60,7 +60,7 @@ export class CachedBinaryHttpTransport implements BinaryHttpTransport {
   ): Promise<BinaryHttpResponse> {
     await mkdir(this.cacheDir, { recursive: true });
     const filePath = binaryCachePath(this.cacheDir, url);
-    const cached = await this.readValidCache(filePath, options.expectedByteLength);
+    const cached = await this.readValidCache(filePath, options.expectedByteLength, options.expectedSha256);
     if (cached) return cached;
 
     const response = await this.upstream.getArrayBuffer(url, options);
@@ -86,6 +86,7 @@ export class CachedBinaryHttpTransport implements BinaryHttpTransport {
   private async readValidCache(
     filePath: string,
     expectedByteLength?: number,
+    expectedSha256?: string,
   ): Promise<BinaryHttpResponse | undefined> {
     try {
       const info = await stat(filePath);
@@ -94,6 +95,13 @@ export class CachedBinaryHttpTransport implements BinaryHttpTransport {
         return undefined;
       }
       const body = await readFile(filePath);
+      if (expectedSha256) {
+        const actual = createHash('sha256').update(body).digest('hex');
+        if (actual !== expectedSha256.toLowerCase()) {
+          await safeUnlink(filePath);
+          return undefined;
+        }
+      }
       return {
         status: 200,
         headers: new Headers({

@@ -59,6 +59,7 @@
     "LICENSE-COMMERCIAL.md",
     "LICENSE-AGPL.md",
     "DEPENDENCY-LICENSING.md",
+    "scripts/verify_lola_live.mjs",
     "package.json"
   ],
   "sideEffects": false,
@@ -69,7 +70,8 @@
     "clean": "rm -rf lib-esm",
     "build": "tsc -p tsconfig.build.json",
     "test": "npm run build && node --test test/*.test.mjs",
-    "test:live": "npm run build && node --test test/*.live.test.mjs"
+    "test:live": "npm run build && node --test test/*.live.test.mjs",
+    "test:planetary-live": "npm run build && node scripts/verify_lola_live.mjs"
   },
   "publishConfig": {
     "access": "public",

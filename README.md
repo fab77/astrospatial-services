@@ -104,6 +104,17 @@ deduplicates concurrent requests in one process and publishes completed files
 through an atomic rename. It is intentionally exported from `planetary/node`
 rather than the browser-compatible package root.
 
+Run the opt-in end-to-end LOLA verification with:
+
+```sh
+npm run test:planetary-live
+```
+
+The first run downloads approximately 531 MB into `.cache/planetary`; later
+runs reuse an entry verified against both catalogued size and SHA-256. Set
+`PLANETARY_CACHE_DIR` to choose a different location or
+`LOLA_LDEM_64_SHA256` to override the curated digest during verification.
+
 ## Requirements
 
 Node.js >=22, npm, TypeScript 5.x. ESM package; browser-compatible APIs (`fetch`, `AbortSignal`) with no dependency on AstroViewer.

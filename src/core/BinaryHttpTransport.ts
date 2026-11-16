@@ -4,6 +4,7 @@ export interface BinaryRequestOptions {
   signal?: AbortSignal;
   timeoutMs?: number;
   expectedByteLength?: number;
+  expectedSha256?: string;
 }
 
 export interface BinaryHttpResponse {
@@ -32,6 +33,9 @@ export class FetchBinaryHttpTransport implements BinaryHttpTransport {
       (!Number.isInteger(options.expectedByteLength) || options.expectedByteLength < 0)
     ) {
       throw new RangeError('expectedByteLength must be a non-negative integer');
+    }
+    if (options.expectedSha256 !== undefined && !/^[a-f0-9]{64}$/i.test(options.expectedSha256)) {
+      throw new TypeError('expectedSha256 must be a 64-character hexadecimal digest');
     }
     const parsedUrl = new URL(url);
     if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
@@ -70,6 +74,15 @@ export class FetchBinaryHttpTransport implements BinaryHttpTransport {
           'INVALID_RESPONSE',
           `Binary response length ${body.byteLength} does not match expected ${options.expectedByteLength}`,
         );
+      }
+      if (options.expectedSha256) {
+        const digest = await crypto.subtle.digest('SHA-256', body);
+        const actual = [...new Uint8Array(digest)]
+          .map((byte) => byte.toString(16).padStart(2, '0'))
+          .join('');
+        if (actual !== options.expectedSha256.toLowerCase()) {
+          throw new ServiceError('INVALID_RESPONSE', `SHA-256 ${actual} does not match expected ${options.expectedSha256}`);
+        }
       }
       return { status: response.status, headers: response.headers, body };
     } catch (error) {

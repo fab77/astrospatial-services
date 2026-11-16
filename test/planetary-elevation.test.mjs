@@ -187,6 +187,7 @@ test('exposes the curated LOLA product with canonical metadata', () => {
   assert.equal(product.metadata.sourceProductId, 'LDEM_64.IMG');
   assert.equal(product.assets.byteLength, 530_841_600);
   assert.match(product.assets.labelUrl, /ldem_64\.lbl$/);
+  assert.match(product.metadata.checksum, /^[a-f0-9]{64}$/);
   assert.equal(product.metadata.longitudeDirection, 'east');
   assert.equal(getOfficialElevationProduct('missing'), undefined);
 });

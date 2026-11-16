@@ -58,6 +58,7 @@ export class PlanetaryElevationService {
     const binary = await this.binaryTransport.getArrayBuffer(product.assets.dataUrl, {
       ...requestOptions,
       expectedByteLength: product.assets.byteLength,
+      expectedSha256: product.metadata.checksum,
     });
     const decoded = decodeLolaGdr(labelText, binary.body, {
       sourceUrl: product.assets.dataUrl,

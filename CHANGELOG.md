@@ -8,6 +8,7 @@
 - Add detached PDS3 label parsing and zero-copy LOLA LDEM decoding.
 - Add cancellable binary acquisition and catalog-driven elevation loading.
 - Add a Node-only atomic filesystem cache for large planetary products.
+- Add an opt-in end-to-end verification against the official LOLA LDEM_64 asset.
 
 ## 0.4.0 — 2026-11-15
 

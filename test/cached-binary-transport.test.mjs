@@ -87,6 +87,27 @@ test('deduplicates concurrent downloads for the same asset', async () => {
   });
 });
 
+test('discards a cached entry whose SHA-256 no longer matches', async () => {
+  await withCache(async (cacheDir) => {
+    const url = 'https://example.test/large.img';
+    await writeFile(binaryCachePath(cacheDir, url), new Uint8Array([9, 9]));
+    let calls = 0;
+    const transport = new CachedBinaryHttpTransport({
+      cacheDir,
+      upstream: {
+        async getArrayBuffer() {
+          calls++;
+          return { status: 200, headers: new Headers(), body: new Uint8Array([1, 2]) };
+        },
+      },
+    });
+    const expectedSha256 = 'a12871fee210fb8619291eaea194581cbd2531e4b23759d225f6806923f63222';
+    const response = await transport.getArrayBuffer(url, { expectedByteLength: 2, expectedSha256 });
+    assert.equal(calls, 1);
+    assert.deepEqual([...response.body], [1, 2]);
+  });
+});
+
 test('requires an explicit cache directory', () => {
   assert.throws(() => new CachedBinaryHttpTransport({ cacheDir: ' ' }), TypeError);
 });

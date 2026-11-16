@@ -41,6 +41,7 @@ export const OFFICIAL_ELEVATION_PRODUCTS = {
       sourceProductId: 'LDEM_64.IMG',
       sourceUrl: `${LOLA_LDEM_64_BASE_URL}/ldem_64.img`,
       version: 'LRO-L-LOLA-4-GDR-V1.0',
+      checksum: '1c4958699d4cffd7e777d51421b6044bba300aa0bef286a544309efb082cdbd6',
       citation: 'Lunar Orbiter Laser Altimeter (LOLA) Science Team, LRO LOLA RDR and GDR products, NASA Planetary Data System.',
     },
   },
