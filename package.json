@@ -89,6 +89,6 @@
   },
   "dependencies": {
     "@xmldom/xmldom": "^0.9.8",
-    "astrospatial-core": "^0.4.3"
+    "astrospatial-core": "^0.4.4"
   }
 }
