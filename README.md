@@ -44,9 +44,26 @@ elevation relative to the declared vertical datum and absolute radius in metres.
 explicit angular extent, pixel-centre or grid-node registration and periodic or
 bounded longitude. It supports global and regional coverage, polar row
 clamping, nearest or bilinear interpolation, scale/offset conversion and NoData.
-Provider-specific acquisition and PDS/GeoTIFF decoding are separate future
-adapters; the elevation field itself has no dependency on HEALPix, rendering or
-filesystem APIs.
+Provider-specific acquisition and additional formats such as GeoTIFF remain
+separate adapters; the elevation field itself has no dependency on HEALPix,
+rendering or filesystem APIs.
+
+### LOLA PDS3 GDR decoding
+
+```ts
+import { decodeLolaGdr } from 'astrospatial-services/planetary/elevation';
+
+const { field, label } = decodeLolaGdr(labelText, imageArrayBuffer, {
+  sourceUrl: 'https://pds-geosciences.wustl.edu/.../ldem_64.img',
+});
+const sample = field.sampleDirection(thetaRad, phiRad);
+```
+
+The decoder validates dimensions, encoding and simple-cylindrical projection
+from the detached PDS3 label. Signed 16-bit little-endian samples are accessed
+directly from the supplied buffer without expanding the complete raster into a
+second numeric array. Acquisition remains separate so applications can choose
+browser fetch, a Node cache or an offline scientific-data workflow.
 
 ## Requirements
 

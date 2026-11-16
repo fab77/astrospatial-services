@@ -13,7 +13,7 @@ export interface GridElevationFieldOptions {
   metadata: ElevationMetadata;
   width: number;
   height: number;
-  values: ArrayLike<number>;
+  values: NumericGridValues;
   geometry: EquirectangularGridGeometry;
   valueType: ElevationValueType;
   interpolation?: ElevationInterpolation;
@@ -21,6 +21,13 @@ export interface GridElevationFieldOptions {
   scale?: number;
   offset?: number;
 }
+
+export interface NumericGridValueReader {
+  readonly length: number;
+  get(index: number): number;
+}
+
+export type NumericGridValues = ArrayLike<number> | NumericGridValueReader;
 
 function requirePositiveInteger(value: number, name: string): void {
   if (!Number.isInteger(value) || value < 1) {
@@ -37,7 +44,7 @@ export class GridElevationField implements ElevationField {
   readonly metadata: ElevationMetadata;
   private readonly width: number;
   private readonly height: number;
-  private readonly values: ArrayLike<number>;
+  private readonly values: NumericGridValues;
   private readonly geometry: EquirectangularGridGeometry;
   private readonly valueType: ElevationValueType;
   private readonly interpolation: ElevationInterpolation;
@@ -171,7 +178,11 @@ export class GridElevationField implements ElevationField {
     }
     const clampedRow = Math.max(0, Math.min(this.height - 1, row));
     const clampedColumn = Math.max(0, Math.min(this.width - 1, wrappedColumn));
-    const value = Number(this.values[clampedRow * this.width + clampedColumn]);
+    const index = clampedRow * this.width + clampedColumn;
+    const rawValue = 'get' in this.values
+      ? this.values.get(index)
+      : this.values[index];
+    const value = Number(rawValue);
     if (!Number.isFinite(value) || Object.is(value, this.noDataValue)) return undefined;
     return value;
   }

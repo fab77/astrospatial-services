@@ -5,6 +5,7 @@
 - Add canonical planetary elevation-field types and a global gridded sampler.
 - Add HEALPix direction conversion, seam, pole, NoData and datum handling.
 - Add an initial curated record for the official LRO LOLA global product.
+- Add detached PDS3 label parsing and zero-copy LOLA LDEM decoding.
 
 ## 0.4.0 — 2026-11-15
 

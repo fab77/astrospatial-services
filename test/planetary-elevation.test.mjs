@@ -185,6 +185,8 @@ test('exposes the curated LOLA product with canonical metadata', () => {
   assert.equal(product, OFFICIAL_ELEVATION_PRODUCTS.moonLolaLdem64);
   assert.equal(product.metadata.referenceRadiusM, 1_737_400);
   assert.equal(product.metadata.sourceProductId, 'LDEM_64.IMG');
+  assert.equal(product.assets.byteLength, 530_841_600);
+  assert.match(product.assets.labelUrl, /ldem_64\.lbl$/);
   assert.equal(product.metadata.longitudeDirection, 'east');
   assert.equal(getOfficialElevationProduct('missing'), undefined);
 });
