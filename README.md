@@ -7,6 +7,47 @@ Earth place resolution, HiPS discovery, TAP clients, wildfire services and
 Copernicus emergency-mapping products, plus OpenStreetMap infrastructure
 discovery through Overpass.
 
+## Planetary elevation
+
+```ts
+import { GridElevationField } from 'astrospatial-services/planetary/elevation';
+import { OFFICIAL_ELEVATION_PRODUCTS } from 'astrospatial-services/planetary/catalog';
+
+const product = OFFICIAL_ELEVATION_PRODUCTS.moonLolaLdem64;
+const field = new GridElevationField({
+  metadata: product.metadata,
+  width,
+  height,
+  values,
+  geometry: {
+    westLongitudeRad: 0,
+    eastLongitudeRad: 2 * Math.PI,
+    northLatitudeRad: Math.PI / 2,
+    southLatitudeRad: -Math.PI / 2,
+    registration: 'pixel-center',
+    periodicLongitude: true,
+  },
+  valueType: 'elevation',
+  noDataValue: -32768,
+});
+
+const sample = field.sampleDirection(thetaRad, phiRad);
+// { valid: true, elevationM, radiusM }
+```
+
+Planetary elevation fields use a canonical sampling convention compatible with
+HEALPix directions: `theta` is planetocentric colatitude in `[0, PI]` and `phi`
+is east-positive longitude, normalized to `[0, 2PI)`. Samples preserve both
+elevation relative to the declared vertical datum and absolute radius in metres.
+
+`GridElevationField` accepts an already decoded equirectangular grid with
+explicit angular extent, pixel-centre or grid-node registration and periodic or
+bounded longitude. It supports global and regional coverage, polar row
+clamping, nearest or bilinear interpolation, scale/offset conversion and NoData.
+Provider-specific acquisition and PDS/GeoTIFF decoding are separate future
+adapters; the elevation field itself has no dependency on HEALPix, rendering or
+filesystem APIs.
+
 ## Requirements
 
 Node.js >=22, npm, TypeScript 5.x. ESM package; browser-compatible APIs (`fetch`, `AbortSignal`) with no dependency on AstroViewer.

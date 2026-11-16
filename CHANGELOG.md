@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add canonical planetary elevation-field types and a global gridded sampler.
+- Add HEALPix direction conversion, seam, pole, NoData and datum handling.
+- Add an initial curated record for the official LRO LOLA global product.
+
 ## 0.4.0 — 2026-11-15
 
 - Add Copernicus GWIS burnt-area perimeter queries with spatial, temporal and

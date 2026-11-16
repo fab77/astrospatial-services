@@ -9,5 +9,6 @@ export * from './earth/name-resolver/index.js';
 export * from './earth/emergency/index.js';
 export * from './earth/openstreetmap/index.js';
 export * from './earth/wildfire/index.js';
+export * from './planetary/index.js';
 
 export * from "./astronomy/table/index.js";

@@ -38,6 +38,14 @@
     "./earth/wildfire": {
       "types": "./lib-esm/earth/wildfire/index.d.ts",
       "import": "./lib-esm/earth/wildfire/index.js"
+    },
+    "./planetary/elevation": {
+      "types": "./lib-esm/planetary/elevation/index.d.ts",
+      "import": "./lib-esm/planetary/elevation/index.js"
+    },
+    "./planetary/catalog": {
+      "types": "./lib-esm/planetary/catalog/index.d.ts",
+      "import": "./lib-esm/planetary/catalog/index.js"
     }
   },
   "files": [
