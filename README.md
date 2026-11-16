@@ -65,6 +65,24 @@ directly from the supplied buffer without expanding the complete raster into a
 second numeric array. Acquisition remains separate so applications can choose
 browser fetch, a Node cache or an offline scientific-data workflow.
 
+### Official product acquisition
+
+```ts
+import { PlanetaryElevationService } from 'astrospatial-services/planetary/elevation';
+
+const elevations = new PlanetaryElevationService();
+const { product, decoded } = await elevations.load('moon-lro-lola-ldem-64', {
+  signal: abortController.signal,
+});
+const sample = decoded.field.sampleDirection(thetaRad, phiRad);
+```
+
+Acquisition reads the detached label first, downloads the binary through a
+cancellable transport, verifies catalogued `Content-Length` when provided and
+always verifies the final byte length before decoding. Applications handling
+large products can inject their own binary transport backed by a cache or
+offline asset store.
+
 ## Requirements
 
 Node.js >=22, npm, TypeScript 5.x. ESM package; browser-compatible APIs (`fetch`, `AbortSignal`) with no dependency on AstroViewer.

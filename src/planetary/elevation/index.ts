@@ -4,6 +4,12 @@ export { decodeLolaGdr } from './LolaGdrDecoder.js';
 export type { DecodedLolaGdr, LolaGdrDecoderOptions } from './LolaGdrDecoder.js';
 export { parsePds3Label, requirePds3Number, requirePds3String } from './Pds3Label.js';
 export type { Pds3Metadata, Pds3Scalar } from './Pds3Label.js';
+export { PlanetaryElevationService } from './PlanetaryElevationService.js';
+export type {
+  ElevationAcquisitionOptions,
+  LoadedElevationProduct,
+  PlanetaryElevationServiceOptions,
+} from './PlanetaryElevationService.js';
 export { healpixDirectionToCanonical, normalizeEastLongitudeRad } from './coordinates.js';
 export type { CanonicalPlanetaryCoordinates } from './coordinates.js';
 export type {

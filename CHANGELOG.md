@@ -6,6 +6,7 @@
 - Add HEALPix direction conversion, seam, pole, NoData and datum handling.
 - Add an initial curated record for the official LRO LOLA global product.
 - Add detached PDS3 label parsing and zero-copy LOLA LDEM decoding.
+- Add cancellable binary acquisition and catalog-driven elevation loading.
 
 ## 0.4.0 — 2026-11-15
 
