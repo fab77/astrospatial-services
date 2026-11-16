@@ -38,6 +38,18 @@
     "./earth/wildfire": {
       "types": "./lib-esm/earth/wildfire/index.d.ts",
       "import": "./lib-esm/earth/wildfire/index.js"
+    },
+    "./planetary/elevation": {
+      "types": "./lib-esm/planetary/elevation/index.d.ts",
+      "import": "./lib-esm/planetary/elevation/index.js"
+    },
+    "./planetary/catalog": {
+      "types": "./lib-esm/planetary/catalog/index.d.ts",
+      "import": "./lib-esm/planetary/catalog/index.js"
+    },
+    "./planetary/node": {
+      "types": "./lib-esm/planetary/node/index.d.ts",
+      "import": "./lib-esm/planetary/node/index.js"
     }
   },
   "files": [
@@ -47,6 +59,7 @@
     "LICENSE-COMMERCIAL.md",
     "LICENSE-AGPL.md",
     "DEPENDENCY-LICENSING.md",
+    "scripts/verify_lola_live.mjs",
     "package.json"
   ],
   "sideEffects": false,
@@ -57,7 +70,8 @@
     "clean": "rm -rf lib-esm",
     "build": "tsc -p tsconfig.build.json",
     "test": "npm run build && node --test test/*.test.mjs",
-    "test:live": "npm run build && node --test test/*.live.test.mjs"
+    "test:live": "npm run build && node --test test/*.live.test.mjs",
+    "test:planetary-live": "npm run build && node scripts/verify_lola_live.mjs"
   },
   "publishConfig": {
     "access": "public",
@@ -70,10 +84,11 @@
     "url": "git+https://github.com/fab77/astrospatial-services.git"
   },
   "devDependencies": {
+    "@types/node": "^24.19.2",
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "astrospatial-core": "^0.4.3",
-    "@xmldom/xmldom": "^0.9.8"
+    "@xmldom/xmldom": "^0.9.8",
+    "astrospatial-core": "^0.4.4"
   }
 }

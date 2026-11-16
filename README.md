@@ -7,6 +7,114 @@ Earth place resolution, HiPS discovery, TAP clients, wildfire services and
 Copernicus emergency-mapping products, plus OpenStreetMap infrastructure
 discovery through Overpass.
 
+## Planetary elevation
+
+```ts
+import { GridElevationField } from 'astrospatial-services/planetary/elevation';
+import { OFFICIAL_ELEVATION_PRODUCTS } from 'astrospatial-services/planetary/catalog';
+
+const product = OFFICIAL_ELEVATION_PRODUCTS.moonLolaLdem64;
+const field = new GridElevationField({
+  metadata: product.metadata,
+  width,
+  height,
+  values,
+  geometry: {
+    westLongitudeRad: 0,
+    eastLongitudeRad: 2 * Math.PI,
+    northLatitudeRad: Math.PI / 2,
+    southLatitudeRad: -Math.PI / 2,
+    registration: 'pixel-center',
+    periodicLongitude: true,
+  },
+  valueType: 'elevation',
+  noDataValue: -32768,
+});
+
+const sample = field.sampleDirection(thetaRad, phiRad);
+// { valid: true, elevationM, radiusM }
+```
+
+Planetary elevation fields use a canonical sampling convention compatible with
+HEALPix directions: `theta` is planetocentric colatitude in `[0, PI]` and `phi`
+is east-positive longitude, normalized to `[0, 2PI)`. Samples preserve both
+elevation relative to the declared vertical datum and absolute radius in metres.
+
+`GridElevationField` accepts an already decoded equirectangular grid with
+explicit angular extent, pixel-centre or grid-node registration and periodic or
+bounded longitude. It supports global and regional coverage, polar row
+clamping, nearest or bilinear interpolation, scale/offset conversion and NoData.
+Provider-specific acquisition and additional formats such as GeoTIFF remain
+separate adapters; the elevation field itself has no dependency on HEALPix,
+rendering or filesystem APIs.
+
+### LOLA PDS3 GDR decoding
+
+```ts
+import { decodeLolaGdr } from 'astrospatial-services/planetary/elevation';
+
+const { field, label } = decodeLolaGdr(labelText, imageArrayBuffer, {
+  sourceUrl: 'https://pds-geosciences.wustl.edu/.../ldem_64.img',
+});
+const sample = field.sampleDirection(thetaRad, phiRad);
+```
+
+The decoder validates dimensions, encoding and simple-cylindrical projection
+from the detached PDS3 label. Signed 16-bit little-endian samples are accessed
+directly from the supplied buffer without expanding the complete raster into a
+second numeric array. Acquisition remains separate so applications can choose
+browser fetch, a Node cache or an offline scientific-data workflow.
+
+### Official product acquisition
+
+```ts
+import { PlanetaryElevationService } from 'astrospatial-services/planetary/elevation';
+
+const elevations = new PlanetaryElevationService();
+const { product, decoded } = await elevations.load('moon-lro-lola-ldem-64', {
+  signal: abortController.signal,
+});
+const sample = decoded.field.sampleDirection(thetaRad, phiRad);
+```
+
+Acquisition reads the detached label first, downloads the binary through a
+cancellable transport, verifies catalogued `Content-Length` when provided and
+always verifies the final byte length before decoding. Applications handling
+large products can inject their own binary transport backed by a cache or
+offline asset store.
+
+### Node filesystem cache
+
+```ts
+import { PlanetaryElevationService } from 'astrospatial-services/planetary/elevation';
+import { CachedBinaryHttpTransport } from 'astrospatial-services/planetary/node';
+
+const elevations = new PlanetaryElevationService({
+  binaryTransport: new CachedBinaryHttpTransport({
+    cacheDir: '/absolute/path/to/planetary-cache',
+  }),
+});
+
+const result = await elevations.load('moon-lro-lola-ldem-64');
+```
+
+The Node-only transport names cached assets by a SHA-256 hash of their source
+URL, validates catalogued byte length before reuse, removes stale partial files,
+deduplicates concurrent requests in one process and publishes completed files
+through an atomic rename. It is intentionally exported from `planetary/node`
+rather than the browser-compatible package root.
+
+Run the opt-in end-to-end LOLA verification with:
+
+```sh
+npm run test:planetary-live
+```
+
+The first run downloads approximately 531 MB into `.cache/planetary`; later
+runs reuse an entry verified against both catalogued size and SHA-256. Set
+`PLANETARY_CACHE_DIR` to choose a different location or
+`LOLA_LDEM_64_SHA256` to override the curated digest during verification.
+
 ## Requirements
 
 Node.js >=22, npm, TypeScript 5.x. ESM package; browser-compatible APIs (`fetch`, `AbortSignal`) with no dependency on AstroViewer.
